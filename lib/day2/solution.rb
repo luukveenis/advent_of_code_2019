@@ -1,6 +1,20 @@
 class Computer
   attr_accessor :memory
 
+  def self.find_inputs(intcode, result)
+    (0..99).each do |noun|
+      (0..99).each do |verb|
+        computer = Computer.new(intcode)
+
+        computer.memory[1] = noun
+        computer.memory[2] = verb
+        computer.call
+
+        return [noun, verb]  if computer.memory[0] == result
+      end
+    end
+  end
+
   def initialize(intcode)
     @memory = intcode.split(",").map!(&:to_i)
   end
@@ -35,4 +49,7 @@ input = File.readlines(ARGV[0], chomp: true)
 
 input.each_with_index do |line, index|
   puts Computer.new(line).call
+
+  noun, verb = Computer.find_inputs(line, 19690720)
+  puts 100 * noun + verb
 end
